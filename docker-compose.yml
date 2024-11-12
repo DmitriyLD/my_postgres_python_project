@@ -1,0 +1,24 @@
+
+services:
+  db:
+    image: postgres:latest
+    container_name: my_postgres
+    environment:
+      POSTGRES_USER: dmitriy_lashkov
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: dmitriy_lashkov
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  python:
+    image: python:3.10
+    container_name: my_python_app
+    volumes:
+      - .:/app
+    working_dir: /app
+    depends_on:
+      - db
+    command: >
+      bash -c "pip install -r requirements.txt && python app.py"
